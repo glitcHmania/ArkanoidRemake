@@ -17,7 +17,7 @@ RectF::RectF(Vec2& topLeft, Vec2& bottomRight)
 
 RectF::RectF(Vec2& topLeft, float width, float height)
 	:
-	right(topLeft.x + widht),
+	right(topLeft.x + width),
 	left(topLeft.x),
 	top(topLeft.y),
 	bottom(topLeft.y + height)
