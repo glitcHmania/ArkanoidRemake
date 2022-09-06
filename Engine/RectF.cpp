@@ -26,6 +26,14 @@ RectF::RectF(Vec2& topLeft, float width, float height)
 
 RectF RectF::ByCenter(Vec2& center, float halfWidth, float halfHeight)
 {
-	const Vec2 half(halfWidth, halfHeight);
-	return RectF(center - half, halfWidth * 2, halfHeight * 2);
+	const Vec2 half = Vec2(halfWidth, halfHeight);
+	return RectF(center - half, center + half);
+}
+
+bool RectF::isCollidingWith(const RectF& otherRect) const
+{
+	return (left <= otherRect.right &&
+		right >= otherRect.left &&
+		top <= otherRect.bottom &&
+		bottom >= otherRect.top);
 }

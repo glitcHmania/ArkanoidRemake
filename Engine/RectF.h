@@ -1,6 +1,5 @@
 #pragma once
 #include "Vec2.h"
-#include "Graphics.h"
 class RectF
 {
 public:
@@ -9,6 +8,7 @@ public:
 	RectF(Vec2& topLeft, Vec2& bottomRight);
 	RectF(Vec2& topLeft, float width, float height);
 	static RectF ByCenter(Vec2& center, float halfWidth, float halfHeight);
+	bool isCollidingWith(const RectF& otherRect) const;
 	float right;
 	float left;
 	float top;
