@@ -61,3 +61,8 @@ void Ball::BounceY()
 {
 	vel.y = -vel.y;
 }
+
+Vec2 Ball::GetVel()
+{
+	return vel;
+}

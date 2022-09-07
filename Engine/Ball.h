@@ -13,6 +13,7 @@ public:
 	bool WallCollision(const RectF& walls);
 	void BounceX();
 	void BounceY();
+	Vec2 GetVel();
 private:
 	Vec2 pos;
 	Vec2 vel;
