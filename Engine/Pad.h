@@ -12,8 +12,11 @@ public:
 	void Update(float deltaTime, Keyboard& kbd, RectF& walls);
 	void Draw(Graphics& gfx);
 	RectF GetRect();
+	RectF GetRightCornerRect();
+	RectF GetLeftCornerRect();
 	RectF GetMainRect();
 	bool BallCollision(Ball& ball);
+	bool BallCornerCollision(Ball& ball);
 	void WallCollision(RectF& walls);
 
 private:
@@ -24,6 +27,6 @@ private:
 	float sideSize = 5.0f;
 	Color mainC;
 	Color sideC;
-
+	const float cornerZoneSize = 4.0f;
 };
 

@@ -26,8 +26,8 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	walls(gfx.ScreenWidth, 0.0f, 0.0f, gfx.ScreenHeight),
-	ball(Vec2(400.0f,500.0f), Vec2(300.0f, -300.0f)),
-	pad(Vec2(400.0f, 550.0f), 20, 10, Colors::Green, Colors::Blue)
+	ball(Vec2(400.0f,540.0f), Vec2(300.0f, -300.0f)),
+	pad(Vec2(400.0f, 550.0f), 20, 4, Colors::Green, Colors::Cyan)
 {
 	Color colorList[4] = { Colors::Red, Colors::Blue, Colors::Green, Colors::Yellow };
 	for (int y = 0; y < bricksRows ; ++y)
@@ -51,27 +51,52 @@ void Game::UpdateModel()
 {
 	float deltaTime = ft.Mark();
 	
-	ball.Update(deltaTime);
-	ball.WallCollision(walls);
-
-	for (Brick& b : bricks)
+	if (!gameStarted && wnd.kbd.KeyIsPressed(VK_RETURN))
 	{
-		b.BallCollision(ball);
-		b.BallCollision(ball);
+		gameStarted = true;
 	}
 
-	pad.BallCollision(ball);
-	pad.WallCollision(walls);
-	pad.Update(deltaTime, wnd.kbd, walls);
+	if (ball.BottomCollision(walls))
+	{
+		gameOver = true;
+	}
+
+	if (gameStarted && !gameOver)
+	{
+		ball.Update(deltaTime);
+		ball.WallCollision(walls);
+
+		for (Brick& brick : bricks)
+		{
+			brick.BallCollision(ball);
+			brick.BallCollision(ball);
+		}
+
+		pad.BallCornerCollision(ball);
+		pad.BallCollision(ball);
+		pad.WallCollision(walls);
+		pad.Update(deltaTime, wnd.kbd, walls);
+	}
 }
 
 void Game::ComposeFrame()
 {
-	for (Brick& b : bricks)
+	for (Brick& brick : bricks)
 	{
-		b.Draw(gfx);
+		brick.Draw(gfx);
+	}
+
+	if (gameOver)
+	{
+		gfx.DrawGameOver(gfx.ScreenWidth / 2 - 25, gfx.ScreenHeight / 2 - 25);
+	}
+
+	if (!gameStarted)
+	{
+		gfx.DrawStartGame(gfx.ScreenWidth / 2 - 25, gfx.ScreenHeight / 2 - 25);
 	}
 
 	ball.Draw(gfx);
 	pad.Draw(gfx);
+
 }

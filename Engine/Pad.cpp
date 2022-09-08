@@ -32,12 +32,24 @@ void Pad::Draw(Graphics& gfx)
 {
 	gfx.DrawRect(GetRect(), sideC);
 	gfx.DrawRect(GetMainRect(), mainC);
+	//gfx.DrawRect(GetRightCornerRect(), mainC);
+	//gfx.DrawRect(GetLeftCornerRect(), mainC);
 }
 
 RectF Pad::GetRect()
 {
 	const Vec2 half(halfWidth, halfHeight);
 	return RectF(pos - half, pos + half);
+}
+
+RectF Pad::GetRightCornerRect()
+{
+	return RectF(pos.x + halfWidth + cornerZoneSize, pos.x + halfWidth - cornerZoneSize, pos.y - halfHeight + cornerZoneSize, pos.y - halfHeight - cornerZoneSize);
+}
+
+RectF Pad::GetLeftCornerRect()
+{
+	return RectF(pos.x - halfWidth + cornerZoneSize, pos.x - halfWidth - cornerZoneSize, pos.y - halfHeight + cornerZoneSize, pos.y - halfHeight - cornerZoneSize);
 }
 
 RectF Pad::GetMainRect()
@@ -47,13 +59,37 @@ RectF Pad::GetMainRect()
 
 bool Pad::BallCollision(Ball& ball)
 {
-	if ( GetRect().isCollidingWith(ball.GetRect()) )
+	if ( GetRect().isCollidingWith(ball.GetRect()))
 	{
 		if (ball.GetVel().y > 0)
 		{
 			ball.BounceY();
 		}
 		return true;
+	}
+	return false;
+}
+
+bool Pad::BallCornerCollision(Ball& ball)
+{
+	// TOP RIGHT CORNER
+	if (GetRightCornerRect().isCollidingWith(ball.GetRect()))
+	{
+		if(ball.GetVel().x < 0)
+		{
+			ball.BounceY();
+			ball.BounceX();
+		}
+		return true;
+	}
+	// TOP LEFT CORNER
+	else if (GetLeftCornerRect().isCollidingWith(ball.GetRect()))
+	{
+		if (ball.GetVel().x > 0)
+		{
+			ball.BounceY();
+			ball.BounceX();
+		}
 	}
 	return false;
 }

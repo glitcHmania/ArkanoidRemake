@@ -48,6 +48,8 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+	bool gameStarted = false;
+	bool gameOver = false;
 	RectF walls;
 	Ball ball;
 	FrameTimer ft;

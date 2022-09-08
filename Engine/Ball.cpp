@@ -43,13 +43,17 @@ bool Ball::WallCollision(const RectF& walls)
 		BounceY();
 		isColliding = true;
 	}
-	if (GetRect().bottom > walls.bottom)
+	return isColliding;
+}
+
+bool Ball::BottomCollision(const RectF& walls)
+{
+	if (GetRect().bottom > walls.bottom - 7.0f)
 	{
 		pos.y += walls.bottom - GetRect().bottom;
-		BounceY();
-		isColliding = true;
+		return true;
 	}
-	return isColliding;
+	return false;
 }
 
 void Ball::BounceX()
