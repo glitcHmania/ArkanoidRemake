@@ -28,6 +28,7 @@
 #include "FrameTimer.h"
 #include "Brick.h"
 #include "Pad.h"
+#include "Vec2.h"
 
 class Game
 {
@@ -50,7 +51,13 @@ private:
 	RectF walls;
 	Ball ball;
 	FrameTimer ft;
-	Brick brick;
+	const Vec2 brickStartPos = Vec2(10.0f, 10.0f);
+	static constexpr int bricksRows = 4;
+	static constexpr int bricksColumns = 15;
+	static constexpr int nBricks = bricksRows * bricksColumns;
+	const float brickWidth = 52.0f;
+	const float brickHeight = 20.0f;
+	Brick bricks[nBricks];
 	Pad pad;
 	/********************************/
 };

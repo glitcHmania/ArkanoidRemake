@@ -27,9 +27,16 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
 	walls(gfx.ScreenWidth, 0.0f, 0.0f, gfx.ScreenHeight),
 	ball(Vec2(400.0f,500.0f), Vec2(300.0f, -300.0f)),
-	brick(Vec2(600.0f, 50.0f), 50.0f, 20.0f, Colors::Green),
 	pad(Vec2(400.0f, 550.0f), 20, 10, Colors::Green, Colors::Blue)
 {
+	Color colorList[4] = { Colors::Red, Colors::Blue, Colors::Green, Colors::Yellow };
+	for (int y = 0; y < bricksRows ; ++y)
+	{
+		for (int x = 0; x < bricksColumns; ++x)
+		{
+			bricks[x + y * bricksColumns] = Brick(Vec2((x * brickWidth) + brickStartPos.x, (y * brickHeight) + brickStartPos.y), brickWidth, brickHeight, colorList[y % 4]);
+		}
+	}
 }
 
 void Game::Go()
@@ -45,9 +52,14 @@ void Game::UpdateModel()
 	float deltaTime = ft.Mark();
 	
 	ball.Update(deltaTime);
-	brick.BallCollision(ball);
 	ball.WallCollision(walls);
-	brick.BallCollision(ball);
+
+	for (Brick& b : bricks)
+	{
+		b.BallCollision(ball);
+		b.BallCollision(ball);
+	}
+
 	pad.BallCollision(ball);
 	pad.WallCollision(walls);
 	pad.Update(deltaTime, wnd.kbd, walls);
@@ -55,7 +67,11 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	brick.Draw(gfx);
+	for (Brick& b : bricks)
+	{
+		b.Draw(gfx);
+	}
+
 	ball.Draw(gfx);
 	pad.Draw(gfx);
 }

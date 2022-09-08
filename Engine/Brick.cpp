@@ -20,12 +20,22 @@ Brick::Brick(Vec2& in_topLeft, Vec2& in_bottomRight, Color in_c)
 {
 }
 
+Brick::Brick(float in_right, float in_left, float in_top, float in_bottom, Color in_c)
+	:
+	right(in_right),
+	left(in_left),
+	top(in_top),
+	bottom(in_bottom),
+	c(in_c)
+{
+}
+
 void Brick::Draw(Graphics& gfx)
 {
 	const RectF rect = GetRect();
 	if (!isDestroyed)
 	{
-		gfx.DrawRect(rect, c);
+		gfx.DrawRect(int(rect.left + gapSize), int(rect.top + gapSize), int(rect.right - gapSize), int(rect.bottom - gapSize), c);
 	}
 }
 
