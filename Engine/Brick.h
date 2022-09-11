@@ -12,7 +12,9 @@ public:
 	Brick(float in_right, float in_left, float in_top, float in_bottom, Color in_c);
 	void Draw(Graphics& gfx);
 	RectF GetRect();
-	bool BallCollision(Ball& ball);
+	bool CheckBallCollision(Ball& ball);
+	void ExecuteBallCollision(Ball& ball);
+	Vec2 GetCenter();
 private:
 	bool isDestroyed = false;
 	Color c;

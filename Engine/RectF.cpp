@@ -37,3 +37,8 @@ bool RectF::isCollidingWith(const RectF& otherRect) const
 		top <= otherRect.bottom &&
 		bottom >= otherRect.top);
 }
+
+Vec2 RectF::GetCenter()
+{
+	return Vec2((right + left)/2, (top + bottom)/2);
+}

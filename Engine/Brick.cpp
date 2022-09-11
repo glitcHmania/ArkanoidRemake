@@ -1,4 +1,6 @@
 #include "Brick.h"
+#include <assert.h>
+#include <cmath>
 
 Brick::Brick(Vec2& in_topLeft, float in_width, float in_height, Color in_c)
 	:
@@ -44,13 +46,30 @@ RectF Brick::GetRect()
 	return RectF(Vec2(left,top), Vec2(right,bottom));
 }
 
-bool Brick::BallCollision(Ball& ball)
+bool Brick::CheckBallCollision(Ball& ball)
 {
-	if (!isDestroyed && GetRect().isCollidingWith(ball.GetRect()))
+	return !isDestroyed && GetRect().isCollidingWith(ball.GetRect());
+}
+
+void Brick::ExecuteBallCollision(Ball& ball)
+{
+	assert(CheckBallCollision(ball));
+	if (signbit(ball.GetVel().x) == signbit(ball.GetPos().x - GetCenter().x))
 	{
 		ball.BounceY();
-		isDestroyed = true;
-		return true;
 	}
-	return false;
+	else if (ball.GetPos().x < right && ball.GetPos().x > left)
+	{
+		ball.BounceY();
+	}
+	else
+	{
+		ball.BounceX();
+	}
+	isDestroyed = true;
+}
+
+Vec2 Brick::GetCenter()
+{
+	return GetRect().GetCenter();
 }

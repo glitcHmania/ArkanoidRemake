@@ -43,6 +43,12 @@ bool Ball::WallCollision(const RectF& walls)
 		BounceY();
 		isColliding = true;
 	}
+	if (GetRect().bottom > walls.bottom)
+	{
+		pos.y += walls.bottom - GetRect().bottom;
+		BounceY();
+		isColliding = true;
+	}
 	return isColliding;
 }
 
@@ -69,4 +75,9 @@ void Ball::BounceY()
 Vec2 Ball::GetVel()
 {
 	return vel;
+}
+
+Vec2 Ball::GetPos()
+{
+	return pos;
 }

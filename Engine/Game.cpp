@@ -26,7 +26,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	walls(gfx.ScreenWidth, 0.0f, 0.0f, gfx.ScreenHeight),
-	ball(Vec2(400.0f,540.0f), Vec2(300.0f, -300.0f)),
+	ball(Vec2(90.0f,140.0f), Vec2(-300.0f, -300.0f)),
 	pad(Vec2(400.0f, 550.0f), 20, 4, Colors::Green, Colors::Cyan)
 {
 	Color colorList[4] = { Colors::Red, Colors::Blue, Colors::Green, Colors::Yellow };
@@ -42,36 +42,62 @@ Game::Game( MainWindow& wnd )
 void Game::Go()
 {
 	gfx.BeginFrame();	
-	UpdateModel();
+	float elapsedTime = ft.Mark();
+	while (elapsedTime > 0.0f)
+	{
+		float deltaTime = std::min(0.0025f, elapsedTime);
+		UpdateModel(deltaTime);
+		elapsedTime -= deltaTime;
+	}
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel()
+void Game::UpdateModel(float deltaTime)
 {
-	float deltaTime = ft.Mark();
-	
 	if (!gameStarted && wnd.kbd.KeyIsPressed(VK_RETURN))
 	{
 		gameStarted = true;
 	}
 
-	if (ball.BottomCollision(walls))
-	{
-		gameOver = true;
-	}
+	//if (ball.BottomCollision(walls))
+	//{
+	//	gameOver = true;
+	//}
 
 	if (gameStarted && !gameOver)
 	{
 		ball.Update(deltaTime);
 		ball.WallCollision(walls);
 
-		for (Brick& brick : bricks)
+		int currentColIndex;
+		float currentColDistSq;
+		bool hasCollided = false;
+		for (int i = 0; i < nBricks; i++)
 		{
-			brick.BallCollision(ball);
-			brick.BallCollision(ball);
+			if (bricks[i].CheckBallCollision(ball))
+			{
+				const float newColDistSq = (ball.GetPos() - bricks[i].GetCenter()).GetLengthSq();
+				if (hasCollided)
+				{
+					if (newColDistSq < currentColDistSq)
+					{
+						currentColDistSq = newColDistSq;
+						currentColIndex = i;
+					}
+				}
+				else
+				{
+					currentColDistSq = newColDistSq;
+					currentColIndex = i;
+					hasCollided = true;
+				}
+			}
 		}
-
+		if (hasCollided)
+		{
+			bricks[currentColIndex].ExecuteBallCollision(ball);
+		}
 		pad.BallCornerCollision(ball);
 		pad.BallCollision(ball);
 		pad.WallCollision(walls);
