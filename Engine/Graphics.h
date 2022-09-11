@@ -64,6 +64,8 @@ public:
 		DrawRect(int(rect.left), int(rect.top), int(rect.right), int(rect.bottom), c);
 	}
 	void DrawCircle(int x, int y, int radius, Color c);
+	void DrawStartGame(int x, int y);
+	void DrawGameOver(int x, int y);
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;

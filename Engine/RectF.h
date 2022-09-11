@@ -9,6 +9,7 @@ public:
 	RectF(Vec2& topLeft, float width, float height);
 	static RectF ByCenter(Vec2& center, float halfWidth, float halfHeight);
 	bool isCollidingWith(const RectF& otherRect) const;
+	Vec2 GetCenter();
 	float right;
 	float left;
 	float top;

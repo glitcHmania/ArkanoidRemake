@@ -39,7 +39,7 @@ public:
 	void Go();
 private:
 	void ComposeFrame();
-	void UpdateModel();
+	void UpdateModel(float deltaTime);
 	/********************************/
 	/*  User Functions              */
 	/********************************/
@@ -48,6 +48,8 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+	bool gameStarted = false;
+	bool gameOver = false;
 	RectF walls;
 	Ball ball;
 	FrameTimer ft;

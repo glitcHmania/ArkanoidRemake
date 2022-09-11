@@ -11,9 +11,11 @@ public:
 	void Update(float deltaTime);
 	RectF GetRect();
 	bool WallCollision(const RectF& walls);
+	bool BottomCollision(const RectF& walls);
 	void BounceX();
 	void BounceY();
 	Vec2 GetVel();
+	Vec2 GetPos();
 private:
 	Vec2 pos;
 	Vec2 vel;
