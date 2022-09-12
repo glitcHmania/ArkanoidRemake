@@ -18,6 +18,7 @@ public:
 	bool BallCollision(Ball& ball);
 	bool BallCornerCollision(Ball& ball);
 	void WallCollision(RectF& walls);
+	Vec2 GetCenter();
 
 private:
 	Vec2 pos;

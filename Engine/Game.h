@@ -61,5 +61,7 @@ private:
 	const float brickHeight = 20.0f;
 	Brick bricks[nBricks];
 	Pad pad;
+	float ballStartVelVertical = -300.0f;
+	float ballStartPosVertical = 539.0f;
 	/********************************/
 };

@@ -26,7 +26,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	walls(gfx.ScreenWidth, 0.0f, 0.0f, gfx.ScreenHeight),
-	ball(Vec2(90.0f,140.0f), Vec2(-300.0f, -300.0f)),
+	ball(Vec2(400.0f, ballStartPosVertical), Vec2(-300.0f, ballStartVelVertical)),
 	pad(Vec2(400.0f, 550.0f), 20, 4, Colors::Green, Colors::Cyan)
 {
 	Color colorList[4] = { Colors::Red, Colors::Blue, Colors::Green, Colors::Yellow };
@@ -41,7 +41,9 @@ Game::Game( MainWindow& wnd )
 
 void Game::Go()
 {
-	gfx.BeginFrame();	
+	gfx.BeginFrame();
+
+	// deltaTime calculation
 	float elapsedTime = ft.Mark();
 	while (elapsedTime > 0.0f)
 	{
@@ -55,21 +57,28 @@ void Game::Go()
 
 void Game::UpdateModel(float deltaTime)
 {
+	// Checking if the "ENTER" is pressed to start the game
 	if (!gameStarted && wnd.kbd.KeyIsPressed(VK_RETURN))
 	{
 		gameStarted = true;
 	}
 
-	//if (ball.BottomCollision(walls))
-	//{
-	//	gameOver = true;
-	//}
+	// Checking if the ball is colliding with bottom wall to determine the game over status
+	if (ball.BottomCollision(walls))
+	{
+		gameOver = true;
+	}
 
+	// Checking if the game is active
 	if (gameStarted && !gameOver)
 	{
+		// Making the ball move
 		ball.Update(deltaTime);
+
+		// Calculating the ball/outer-walls collision
 		ball.WallCollision(walls);
 
+		// Making the ball hit the closest colliding brick 
 		int currentColIndex;
 		float currentColDistSq;
 		bool hasCollided = false;
@@ -94,35 +103,65 @@ void Game::UpdateModel(float deltaTime)
 				}
 			}
 		}
+
+		// Checking if the ball/brick collision is happened
 		if (hasCollided)
 		{
 			bricks[currentColIndex].ExecuteBallCollision(ball);
 		}
+
+		// Calculating the pad-corner-hitbox/ball collision for diagonal bounce situation
 		pad.BallCornerCollision(ball);
+
+		// Calculating the simple pad/ball collision
 		pad.BallCollision(ball);
+	}
+
+	// Checking if the title screen is active
+	if(!gameStarted && !gameOver)
+	{
+		// Making the ball stick to the pad in the title screen
+		ball.SetPos(Vec2(pad.GetCenter().x, ballStartPosVertical));
+
+		// Making the ball bounce to the center of the screen
+		if (pad.GetCenter().x < gfx.ScreenWidth / 2)
+		{
+			ball.SetVel(Vec2(300.0f,ballStartVelVertical));
+		}
+		else
+		{
+			ball.SetVel(Vec2(-300.0f, ballStartVelVertical));
+		}
+	}
+
+	// Checking if the game is over
+	if (!gameOver)
+	{
+		// Calculating the pad/wall collision
 		pad.WallCollision(walls);
+
+		// Making the pad move
 		pad.Update(deltaTime, wnd.kbd, walls);
 	}
 }
 
 void Game::ComposeFrame()
 {
+	// Drawing the game objects
 	for (Brick& brick : bricks)
 	{
 		brick.Draw(gfx);
 	}
+	ball.Draw(gfx);
+	pad.Draw(gfx);
 
+	// Drawing the title and game over screen
 	if (gameOver)
 	{
 		gfx.DrawGameOver(gfx.ScreenWidth / 2 - 25, gfx.ScreenHeight / 2 - 25);
 	}
-
 	if (!gameStarted)
 	{
 		gfx.DrawStartGame(gfx.ScreenWidth / 2 - 25, gfx.ScreenHeight / 2 - 25);
 	}
-
-	ball.Draw(gfx);
-	pad.Draw(gfx);
-
 }
