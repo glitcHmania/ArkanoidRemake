@@ -107,3 +107,8 @@ void Pad::WallCollision(RectF& walls)
 	}
 
 }
+
+Vec2 Pad::GetCenter()
+{
+	return GetRect().GetCenter();
+}

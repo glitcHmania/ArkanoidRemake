@@ -77,7 +77,17 @@ Vec2 Ball::GetVel()
 	return vel;
 }
 
+void Ball::SetVel(Vec2& new_vel)
+{
+	vel = new_vel;
+}
+
 Vec2 Ball::GetPos()
 {
 	return pos;
+}
+
+void Ball::SetPos(Vec2& new_pos)
+{
+	pos = new_pos;
 }
