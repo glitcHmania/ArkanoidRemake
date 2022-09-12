@@ -29,5 +29,6 @@ private:
 	Color mainC;
 	Color sideC;
 	const float cornerZoneSize = 4.0f;
+	float friction = 0.5f;
 };
 

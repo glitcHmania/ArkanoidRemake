@@ -26,7 +26,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	walls(gfx.ScreenWidth, 0.0f, 0.0f, gfx.ScreenHeight),
-	ball(Vec2(400.0f, ballStartPosVertical), Vec2(-300.0f, ballStartVelVertical)),
+	ball(Vec2(400.0f, 539.0f), Vec2(-300.0f, -300.0f)),
 	pad(Vec2(400.0f, 550.0f), 20, 4, Colors::Green, Colors::Cyan)
 {
 	Color colorList[4] = { Colors::Red, Colors::Blue, Colors::Green, Colors::Yellow };
@@ -64,10 +64,10 @@ void Game::UpdateModel(float deltaTime)
 	}
 
 	// Checking if the ball is colliding with bottom wall to determine the game over status
-	if (ball.BottomCollision(walls))
-	{
-		gameOver = true;
-	}
+	//if (ball.BottomCollision(walls))
+	//{
+	//	gameOver = true;
+	//}
 
 	// Checking if the game is active
 	if (gameStarted && !gameOver)
@@ -111,7 +111,7 @@ void Game::UpdateModel(float deltaTime)
 		}
 
 		// Calculating the pad-corner-hitbox/ball collision for diagonal bounce situation
-		pad.BallCornerCollision(ball);
+		//pad.BallCornerCollision(ball);
 
 		// Calculating the simple pad/ball collision
 		pad.BallCollision(ball);
@@ -121,16 +121,16 @@ void Game::UpdateModel(float deltaTime)
 	if(!gameStarted && !gameOver)
 	{
 		// Making the ball stick to the pad in the title screen
-		ball.SetPos(Vec2(pad.GetCenter().x, ballStartPosVertical));
+		ball.SetPosX(pad.GetCenter().x);
 
 		// Making the ball bounce to the center of the screen
 		if (pad.GetCenter().x < gfx.ScreenWidth / 2)
 		{
-			ball.SetVel(Vec2(300.0f,ballStartVelVertical));
+			ball.SetVelX(300.0f);
 		}
 		else
 		{
-			ball.SetVel(Vec2(-300.0f, ballStartVelVertical));
+			ball.SetVelX(-300.0f);
 		}
 	}
 

@@ -64,6 +64,9 @@ bool Pad::BallCollision(Ball& ball)
 		if (ball.GetVel().y > 0)
 		{
 			ball.BounceY();
+			float newVelX = ball.GetVel().x + (friction * vel);
+			Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 400.0f;
+			ball.SetVel(newVel);
 		}
 		return true;
 	}

@@ -15,9 +15,10 @@ public:
 	void BounceX();
 	void BounceY();
 	Vec2 GetVel();
+	void SetVelX(float new_velX);
 	void SetVel(Vec2& new_vel);
 	Vec2 GetPos();
-	void SetPos(Vec2& new_pos);
+	void SetPosX(float new_posX);
 private:
 	Vec2 pos;
 	Vec2 vel;
