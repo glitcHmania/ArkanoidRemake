@@ -54,9 +54,8 @@ bool Ball::WallCollision(const RectF& walls)
 
 bool Ball::BottomCollision(const RectF& walls)
 {
-	if (GetRect().bottom > walls.bottom - 7.0f)
+	if (GetRect().bottom > walls.bottom - 0.01f)
 	{
-		pos.y += walls.bottom - GetRect().bottom;
 		return true;
 	}
 	return false;

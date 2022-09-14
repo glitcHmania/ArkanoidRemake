@@ -15,14 +15,14 @@ public:
 	RectF GetRightCornerRect();
 	RectF GetLeftCornerRect();
 	RectF GetMainRect();
-	bool BallCollision(Ball& ball);
+	bool BallCollision(Ball& ball, Keyboard& kbd);
 	bool BallCornerCollision(Ball& ball);
 	void WallCollision(RectF& walls);
 	Vec2 GetCenter();
 
 private:
 	Vec2 pos;
-	float vel = 400.0f;
+	float vel = 550.0f;
 	float halfWidth;
 	float halfHeight;
 	float sideSize = 5.0f;

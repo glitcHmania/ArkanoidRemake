@@ -25,9 +25,13 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	walls(gfx.ScreenWidth, 0.0f, 0.0f, gfx.ScreenHeight),
-	ball(Vec2(400.0f, 539.0f), Vec2(-300.0f, -300.0f)),
-	pad(Vec2(400.0f, 550.0f), 20, 4, Colors::Green, Colors::Cyan)
+	soundPad(L"Sounds\\arkpad.wav"),
+	soundBrick(L"Sounds\\arkbrick.wav"),
+	soundReady(L"Sounds\\ready.wav"),
+	soundFart(L"Sounds\\fart.wav"),
+	walls(650.0f, 150.0f, 50.0f, 550.0f),
+	ball(Vec2((walls.right + walls.left) / 2.0f, walls.bottom - 61.0f), Vec2(-550.0f, -550.0f)), // Change the multiplier in the "Pad.cpp" if you change the ball velocity
+	pad(Vec2((walls.right + walls.left)/2.0f, walls.bottom - 50.0f), 20, 4, Colors::Green, Colors::Cyan)
 {
 	Color colorList[4] = { Colors::Red, Colors::Blue, Colors::Green, Colors::Yellow };
 	for (int y = 0; y < bricksRows ; ++y)
@@ -64,10 +68,23 @@ void Game::UpdateModel(float deltaTime)
 	}
 
 	// Checking if the ball is colliding with bottom wall to determine the game over status
-	//if (ball.BottomCollision(walls))
-	//{
-	//	gameOver = true;
-	//}
+	if (ball.BottomCollision(walls))
+	{
+		if (lives == 1)
+		{
+			gameOver = true;
+			if (fartPlaying)
+			{
+				soundFart.Play(1.0f, 0.3f);
+				fartPlaying = false;
+			}
+		}
+		else
+		{
+			soundFart.Play(1.0f, 0.3f);
+			lives -= 1;
+		}
+	}
 
 	// Checking if the game is active
 	if (gameStarted && !gameOver)
@@ -76,7 +93,10 @@ void Game::UpdateModel(float deltaTime)
 		ball.Update(deltaTime);
 
 		// Calculating the ball/outer-walls collision
-		ball.WallCollision(walls);
+		if (ball.WallCollision(walls))
+		{
+			soundPad.Play(1.0f, 0.3f);
+		}
 
 		// Making the ball hit the closest colliding brick 
 		int currentColIndex;
@@ -86,6 +106,7 @@ void Game::UpdateModel(float deltaTime)
 		{
 			if (bricks[i].CheckBallCollision(ball))
 			{
+				soundBrick.Play(1.0f, 0.3f);
 				const float newColDistSq = (ball.GetPos() - bricks[i].GetCenter()).GetLengthSq();
 				if (hasCollided)
 				{
@@ -114,7 +135,10 @@ void Game::UpdateModel(float deltaTime)
 		//pad.BallCornerCollision(ball);
 
 		// Calculating the simple pad/ball collision
-		pad.BallCollision(ball);
+		if (pad.BallCollision(ball, wnd.kbd))
+		{
+			soundPad.Play(1.0f, 0.3f);
+		}
 	}
 
 	// Checking if the title screen is active
@@ -148,6 +172,16 @@ void Game::UpdateModel(float deltaTime)
 void Game::ComposeFrame()
 {
 	// Drawing the game objects
+	for (int i = 0; i < lives; i++)
+	{
+		if (!gameOver)
+		{
+			gfx.DrawHeart(int(walls.right - 30.0f - i * 30.0f), int(walls.bottom - 30.0f));
+		}
+	}
+
+	gfx.DrawWalls(walls, 5.0f, Colors::Blue);
+
 	for (Brick& brick : bricks)
 	{
 		brick.Draw(gfx);

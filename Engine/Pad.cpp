@@ -57,18 +57,32 @@ RectF Pad::GetMainRect()
 	return RectF(pos.x + halfWidth - sideSize, pos.x - halfWidth + sideSize, pos.y + halfHeight, pos.y - halfHeight);
 }
 
-bool Pad::BallCollision(Ball& ball)
+bool Pad::BallCollision(Ball& ball, Keyboard& kbd)
 {
 	if ( GetRect().isCollidingWith(ball.GetRect()))
 	{
 		if (ball.GetVel().y > 0)
 		{
-			ball.BounceY();
-			float newVelX = ball.GetVel().x + (friction * vel);
-			Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 400.0f;
-			ball.SetVel(newVel);
+			if (kbd.KeyIsPressed(VK_RIGHT))
+			{
+				ball.BounceY();
+				float newVelX = ball.GetVel().x + (friction * vel);
+				Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
+				ball.SetVel(newVel);
+			}
+			else if (kbd.KeyIsPressed(VK_LEFT))
+			{
+				ball.BounceY();
+				float newVelX = ball.GetVel().x - (friction * vel);
+				Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
+				ball.SetVel(newVel);
+			}
+			else
+			{
+				ball.BounceY();
+			}
+			return true;
 		}
-		return true;
 	}
 	return false;
 }
