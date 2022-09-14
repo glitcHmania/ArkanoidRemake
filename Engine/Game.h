@@ -29,6 +29,7 @@
 #include "Brick.h"
 #include "Pad.h"
 #include "Vec2.h"
+#include "Sound.h"
 
 class Game
 {
@@ -53,13 +54,16 @@ private:
 	RectF walls;
 	Ball ball;
 	FrameTimer ft;
-	const Vec2 brickStartPos = Vec2(10.0f, 10.0f);
+	const Vec2 brickStartPos = Vec2(175.0f, 75.0f);
 	static constexpr int bricksRows = 4;
-	static constexpr int bricksColumns = 15;
+	static constexpr int bricksColumns = 9;
 	static constexpr int nBricks = bricksRows * bricksColumns;
-	const float brickWidth = 52.0f;
+	const float brickWidth = 50.0f;
 	const float brickHeight = 20.0f;
 	Brick bricks[nBricks];
 	Pad pad;
+	Sound soundPad, soundBrick, soundReady, soundFart;
+	bool fartPlaying = true;
+	int lives = 3;
 	/********************************/
 };
