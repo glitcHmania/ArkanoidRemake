@@ -30,10 +30,10 @@ Game::Game( MainWindow& wnd )
 	soundReady(L"Sounds\\ready.wav"),
 	soundFart(L"Sounds\\fart.wav"),
 	walls(650.0f, 150.0f, 25.0f, 575.0f),
-	ball(Vec2((walls.right + walls.left) / 2.0f, walls.bottom - 64.0f), Vec2(-550.0f, -550.0f)), // Change the multiplier in the "Pad.cpp" if you change the ball velocity
+	ball(Vec2((walls.right + walls.left) / 2.0f, walls.bottom - 64.0f), Vec2(-388.0f, -388.0f)), // Change the multiplier in the "Pad.cpp" if you change the ball velocity
 	pad(Vec2((walls.right + walls.left)/2.0f, walls.bottom - 50.0f), 27, 7)
 {
-	const Vec2 brickStartPos = Vec2(walls.left + 15.0f, walls.top + 15.0f);
+	const Vec2 brickStartPos = Vec2(walls.left + 55.0f, walls.top + 80.0f);
 
 	Color color1List[4] = { Colors::MakeRGB(175,0,0), Colors::MakeRGB(0,175,0), Colors::MakeRGB(0,0,175), Colors::MakeRGB(175,146,0) };
 	Color color2List[4] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Yellow };
@@ -41,7 +41,14 @@ Game::Game( MainWindow& wnd )
 	{
 		for (int x = 0; x < bricksColumns; ++x)
 		{
-			bricks[x + y * bricksColumns] = Brick(Vec2((x * brickWidth) + brickStartPos.x, (y * brickHeight) + brickStartPos.y), brickWidth, brickHeight, color1List[y % 4], color2List[y % 4]);
+			if (x != 4 && x != 5)
+			{
+				bricks[x + y * bricksColumns] = Brick(Vec2((x * brickWidth) + brickStartPos.x,
+					(y * brickHeight) + brickStartPos.y),
+					brickWidth, brickHeight,
+					color1List[y % 4],
+					color2List[y % 4]);
+			}
 		}
 	}
 }
@@ -135,7 +142,7 @@ void Game::UpdateModel(float deltaTime)
 		}
 
 		// Calculating the pad-corner-hitbox/ball collision for diagonal bounce situation
-		//pad.BallCornerCollision(ball);
+		pad.BallCornerCollision(ball);
 
 		// Calculating the simple pad/ball collision
 		if (pad.BallCollision(ball, wnd.kbd))
@@ -168,7 +175,7 @@ void Game::UpdateModel(float deltaTime)
 		pad.WallCollision(walls);
 
 		// Making the pad move
-		pad.Update(deltaTime, wnd.kbd, walls);
+		pad.Update(deltaTime, wnd.kbd, walls, wnd.mouse);
 	}
 }
 

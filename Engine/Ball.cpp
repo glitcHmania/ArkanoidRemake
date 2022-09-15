@@ -27,24 +27,28 @@ bool Ball::WallCollision(const RectF& walls)
 	bool isColliding = false;
 	if (GetRect().left < walls.left)
 	{
+		cooldownActive = false;
 		pos.x += walls.left - GetRect().left;
 		BounceX();
 		isColliding = true;
 	}
 	if (GetRect().right > walls.right)
 	{
+		cooldownActive = false;
 		pos.x += walls.right - GetRect().right;
 		BounceX();
 		isColliding = true;
 	}
 	if (GetRect().top < walls.top)
 	{
+		cooldownActive = false;
 		pos.y += walls.top - GetRect().top;
 		BounceY();
 		isColliding = true;
 	}
 	if (GetRect().bottom > walls.bottom)
 	{
+		cooldownActive = false;
 		pos.y += walls.bottom - GetRect().bottom;
 		BounceY();
 		isColliding = true;
@@ -94,4 +98,14 @@ Vec2 Ball::GetPos()
 void Ball::SetPosX(float new_posX)
 {
 	pos.x = new_posX;
+}
+
+void Ball::SetCooldown(bool boolean)
+{
+	cooldownActive = boolean;
+}
+
+bool Ball::GetCooldownStatus()
+{
+	return cooldownActive;
 }

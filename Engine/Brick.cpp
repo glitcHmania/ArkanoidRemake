@@ -77,6 +77,7 @@ void Brick::ExecuteBallCollision(Ball& ball)
 	{
 		ball.BounceX();
 	}
+	ball.SetCooldown(false);
 	isDestroyed = true;
 }
 
