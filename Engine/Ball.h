@@ -19,9 +19,12 @@ public:
 	void SetVel(Vec2& new_vel);
 	Vec2 GetPos();
 	void SetPosX(float new_posX);
+	void SetCooldown(bool boolean);
+	bool GetCooldownStatus();
 private:
 	Vec2 pos;
 	Vec2 vel;
 	float radius = 7.0f;
+	bool cooldownActive = false;
 };
 
