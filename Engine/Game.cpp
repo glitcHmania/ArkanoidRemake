@@ -29,16 +29,19 @@ Game::Game( MainWindow& wnd )
 	soundBrick(L"Sounds\\arkbrick.wav"),
 	soundReady(L"Sounds\\ready.wav"),
 	soundFart(L"Sounds\\fart.wav"),
-	walls(650.0f, 150.0f, 50.0f, 550.0f),
-	ball(Vec2((walls.right + walls.left) / 2.0f, walls.bottom - 61.0f), Vec2(-550.0f, -550.0f)), // Change the multiplier in the "Pad.cpp" if you change the ball velocity
-	pad(Vec2((walls.right + walls.left)/2.0f, walls.bottom - 50.0f), 20, 4, Colors::Green, Colors::Cyan)
+	walls(650.0f, 150.0f, 25.0f, 575.0f),
+	ball(Vec2((walls.right + walls.left) / 2.0f, walls.bottom - 64.0f), Vec2(-550.0f, -550.0f)), // Change the multiplier in the "Pad.cpp" if you change the ball velocity
+	pad(Vec2((walls.right + walls.left)/2.0f, walls.bottom - 50.0f), 27, 7)
 {
-	Color colorList[4] = { Colors::Red, Colors::Blue, Colors::Green, Colors::Yellow };
+	const Vec2 brickStartPos = Vec2(walls.left + 15.0f, walls.top + 15.0f);
+
+	Color color1List[4] = { Colors::MakeRGB(175,0,0), Colors::MakeRGB(0,175,0), Colors::MakeRGB(0,0,175), Colors::MakeRGB(175,146,0) };
+	Color color2List[4] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Yellow };
 	for (int y = 0; y < bricksRows ; ++y)
 	{
 		for (int x = 0; x < bricksColumns; ++x)
 		{
-			bricks[x + y * bricksColumns] = Brick(Vec2((x * brickWidth) + brickStartPos.x, (y * brickHeight) + brickStartPos.y), brickWidth, brickHeight, colorList[y % 4]);
+			bricks[x + y * bricksColumns] = Brick(Vec2((x * brickWidth) + brickStartPos.x, (y * brickHeight) + brickStartPos.y), brickWidth, brickHeight, color1List[y % 4], color2List[y % 4]);
 		}
 	}
 }
@@ -187,7 +190,7 @@ void Game::ComposeFrame()
 		brick.Draw(gfx);
 	}
 	ball.Draw(gfx);
-	pad.Draw(gfx);
+	pad.Draw(gfx, pad.GetCenter());
 
 	// Drawing the title and game over screen
 	if (gameOver)

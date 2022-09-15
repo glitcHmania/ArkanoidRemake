@@ -54,11 +54,10 @@ private:
 	RectF walls;
 	Ball ball;
 	FrameTimer ft;
-	const Vec2 brickStartPos = Vec2(175.0f, 75.0f);
 	static constexpr int bricksRows = 4;
-	static constexpr int bricksColumns = 9;
+	static constexpr int bricksColumns = 12;
 	static constexpr int nBricks = bricksRows * bricksColumns;
-	const float brickWidth = 50.0f;
+	const float brickWidth = 39.0f;
 	const float brickHeight = 20.0f;
 	Brick bricks[nBricks];
 	Pad pad;

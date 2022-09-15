@@ -8,13 +8,12 @@
 class Pad
 {
 public:
-	Pad(Vec2& in_pos, float in_halfWidth, float in_halfHeight, Color in_mainC, Color in_sideC);
+	Pad(Vec2& in_pos, float in_halfWidth, float in_halfHeight);
 	void Update(float deltaTime, Keyboard& kbd, RectF& walls);
-	void Draw(Graphics& gfx);
+	void Draw(Graphics& gfx, Vec2& center);
 	RectF GetRect();
 	RectF GetRightCornerRect();
 	RectF GetLeftCornerRect();
-	RectF GetMainRect();
 	bool BallCollision(Ball& ball, Keyboard& kbd);
 	bool BallCornerCollision(Ball& ball);
 	void WallCollision(RectF& walls);
@@ -26,8 +25,6 @@ private:
 	float halfWidth;
 	float halfHeight;
 	float sideSize = 5.0f;
-	Color mainC;
-	Color sideC;
 	const float cornerZoneSize = 4.0f;
 	float friction = 0.5f;
 };
