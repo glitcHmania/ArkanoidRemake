@@ -1,4 +1,5 @@
 #include "Pad.h"
+#include <math.h>
 
 Pad::Pad(Vec2& in_pos, float in_halfWidth, float in_halfHeight)
 	:
@@ -8,7 +9,7 @@ Pad::Pad(Vec2& in_pos, float in_halfWidth, float in_halfHeight)
 {
 }
 
-void Pad::Update(float deltaTime, Keyboard& kbd, RectF& walls)
+void Pad::Update(float deltaTime, Keyboard& kbd, RectF& walls, Mouse& ms)
 {
 	if (pos.x < walls.right - halfWidth)
 	{
@@ -24,6 +25,11 @@ void Pad::Update(float deltaTime, Keyboard& kbd, RectF& walls)
 			pos.x -= vel * deltaTime;
 		}
 	}
+	if (ms.GetPosX() > walls.left + halfWidth && ms.GetPosX() < walls.right - halfWidth)
+	{
+		pos.x = float(ms.GetPosX());
+	}
+	
 }
 
 void Pad::Draw(Graphics& gfx, Vec2& center)
@@ -786,30 +792,41 @@ RectF Pad::GetLeftCornerRect()
 
 bool Pad::BallCollision(Ball& ball, Keyboard& kbd)
 {
-	if ( GetRect().isCollidingWith(ball.GetRect()))
+	RectF rect = GetRect();
+	if (rect.isCollidingWith(ball.GetRect()) && ball.GetVel().y > 0.0f && !ball.GetCooldownStatus())
 	{
-		if (ball.GetVel().y > 0)
+		if (ball.GetPos().x > rect.GetCenter().x && ball.GetPos().x < rect.right && ball.GetVel().x < 0.0f)
 		{
-			if (kbd.KeyIsPressed(VK_RIGHT))
-			{
-				ball.BounceY();
-				float newVelX = ball.GetVel().x + (friction * vel);
-				Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
-				ball.SetVel(newVel);
-			}
-			else if (kbd.KeyIsPressed(VK_LEFT))
-			{
-				ball.BounceY();
-				float newVelX = ball.GetVel().x - (friction * vel);
-				Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
-				ball.SetVel(newVel);
-			}
-			else
-			{
-				ball.BounceY();
-			}
-			return true;
+			ball.BounceY();
+			ball.BounceX();
 		}
+		else if (ball.GetPos().x > rect.GetCenter().x && ball.GetPos().x < rect.right && ball.GetVel().x > 0.0f)
+		{
+			ball.BounceY();
+		}
+		if (ball.GetPos().x < rect.GetCenter().x && ball.GetPos().x > rect.left && ball.GetVel().x > 0.0f)
+		{
+			ball.BounceY();
+			ball.BounceX();
+		}
+		else if (ball.GetPos().x < rect.GetCenter().x && ball.GetPos().x > rect.left && ball.GetVel().x < 0.0f)
+		{
+			ball.BounceY();
+		}
+		if (kbd.KeyIsPressed(VK_RIGHT) && ball.GetVel().x < 480.0f)
+		{
+			float newVelX = ball.GetVel().x + (friction * vel);
+			Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
+			ball.SetVel(newVel);
+		}
+		if (kbd.KeyIsPressed(VK_LEFT) && ball.GetVel().x > -480.0f)
+		{
+			float newVelX = ball.GetVel().x - (friction * vel);
+			Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
+			ball.SetVel(newVel);
+		}
+		ball.SetCooldown(true);
+		return true;
 	}
 	return false;
 }

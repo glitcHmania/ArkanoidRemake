@@ -54,8 +54,8 @@ private:
 	RectF walls;
 	Ball ball;
 	FrameTimer ft;
-	static constexpr int bricksRows = 4;
-	static constexpr int bricksColumns = 12;
+	static constexpr int bricksRows = 6;
+	static constexpr int bricksColumns = 10;
 	static constexpr int nBricks = bricksRows * bricksColumns;
 	const float brickWidth = 39.0f;
 	const float brickHeight = 20.0f;
