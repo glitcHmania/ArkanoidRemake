@@ -22,7 +22,7 @@ public:
 
 private:
 	Vec2 pos;
-	float vel = 450.0f;
+	float vel = 550.0f;
 	float halfWidth;
 	float halfHeight;
 	float sideSize = 5.0f;

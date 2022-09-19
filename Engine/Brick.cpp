@@ -77,7 +77,10 @@ void Brick::ExecuteBallCollision(Ball& ball)
 	{
 		ball.BounceX();
 	}
-	ball.SetCooldown(false);
+	if (!GetRect().isCollidingWith(ball.GetRect()))
+	{
+		ball.SetCooldown(false);
+	}
 	isDestroyed = true;
 }
 
