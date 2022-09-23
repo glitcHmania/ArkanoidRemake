@@ -16,7 +16,6 @@ public:
 	RectF GetRightCornerRect();
 	RectF GetLeftCornerRect();
 	bool BallCollision(Ball& ball, Keyboard& kbd);
-	bool BallCornerCollision(Ball& ball);
 	void WallCollision(RectF& walls);
 	Vec2 GetCenter();
 

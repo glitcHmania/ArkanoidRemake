@@ -82,6 +82,7 @@ void Brick::ExecuteBallCollision(Ball& ball)
 		ball.SetCooldown(false);
 	}
 	isDestroyed = true;
+	ball.SetCooldown(false);
 }
 
 Vec2 Brick::GetCenter()

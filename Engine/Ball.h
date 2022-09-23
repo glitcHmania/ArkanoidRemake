@@ -6,12 +6,17 @@
 class Ball
 {
 public:
+	enum class HitResult {
+		Empty,
+		Wall,
+		Bottom
+	};
+public:
 	Ball(Vec2& in_pos, Vec2& in_vel);
 	void Draw( Graphics& gfx);
 	void Update(float deltaTime);
 	RectF GetRect();
-	bool WallCollision(const RectF& walls);
-	bool BottomCollision(const RectF& walls);
+	HitResult CollisionType(const RectF& walls);
 	void BounceX();
 	void BounceY();
 	Vec2 GetVel();

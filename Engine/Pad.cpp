@@ -795,21 +795,25 @@ bool Pad::BallCollision(Ball& ball, Keyboard& kbd)
 	RectF rect = GetRect();
 	if (rect.isCollidingWith(ball.GetRect()) && ball.GetVel().y > 0.0f && !ball.GetCooldownStatus())
 	{
-		if (ball.GetPos().x > rect.GetCenter().x && ball.GetPos().x < rect.right && ball.GetVel().x < 0.0f)
+		if (ball.GetPos().x >= rect.GetCenter().x && ball.GetPos().x <= rect.right && ball.GetVel().x < 0.0f)
 		{
 			ball.BounceY();
 			ball.BounceX();
 		}
-		else if (ball.GetPos().x > rect.GetCenter().x && ball.GetPos().x < rect.right && ball.GetVel().x > 0.0f)
+		else if (ball.GetPos().x >= rect.GetCenter().x && ball.GetPos().x <= rect.right && ball.GetVel().x > 0.0f)
 		{
 			ball.BounceY();
 		}
-		if (ball.GetPos().x < rect.GetCenter().x && ball.GetPos().x > rect.left && ball.GetVel().x > 0.0f)
+		else if (ball.GetPos().x < rect.GetCenter().x && ball.GetPos().x >= rect.left && ball.GetVel().x > 0.0f)
 		{
 			ball.BounceY();
 			ball.BounceX();
 		}
-		else if (ball.GetPos().x < rect.GetCenter().x && ball.GetPos().x > rect.left && ball.GetVel().x < 0.0f)
+		else if (ball.GetPos().x < rect.GetCenter().x && ball.GetPos().x >= rect.left && ball.GetVel().x < 0.0f)
+		{
+			ball.BounceY();
+		}
+		else
 		{
 			ball.BounceY();
 		}
@@ -819,7 +823,7 @@ bool Pad::BallCollision(Ball& ball, Keyboard& kbd)
 			Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
 			ball.SetVel(newVel);
 		}
-		if (kbd.KeyIsPressed(VK_LEFT) && ball.GetVel().x > -480.0f)
+		else if (kbd.KeyIsPressed(VK_LEFT) && ball.GetVel().x > -480.0f)
 		{
 			float newVelX = ball.GetVel().x - (friction * vel);
 			Vec2 newVel = Vec2(newVelX, ball.GetVel().y).Normalize() * 550.0f; // Change this multiplier if you change the ball velocity
@@ -827,30 +831,6 @@ bool Pad::BallCollision(Ball& ball, Keyboard& kbd)
 		}
 		ball.SetCooldown(true);
 		return true;
-	}
-	return false;
-}
-
-bool Pad::BallCornerCollision(Ball& ball)
-{
-	// TOP RIGHT CORNER
-	if (GetRightCornerRect().isCollidingWith(ball.GetRect()))
-	{
-		if(ball.GetVel().x < 0)
-		{
-			ball.BounceY();
-			ball.BounceX();
-		}
-		return true;
-	}
-	// TOP LEFT CORNER
-	else if (GetLeftCornerRect().isCollidingWith(ball.GetRect()))
-	{
-		if (ball.GetVel().x > 0)
-		{
-			ball.BounceY();
-			ball.BounceX();
-		}
 	}
 	return false;
 }

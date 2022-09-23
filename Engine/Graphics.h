@@ -25,6 +25,7 @@
 #include "ChiliException.h"
 #include "Colors.h"
 #include "RectF.h"
+#include "Vec2.h"
 
 class Graphics
 {
@@ -64,8 +65,8 @@ public:
 		DrawRect(int(rect.left), int(rect.top), int(rect.right), int(rect.bottom), c);
 	}
 	void DrawCircle(int x, int y, int radius, Color c);
-	void DrawStartGame(int x, int y);
-	void DrawGameOver(int x, int y);
+	void DrawStartGame(RectF& walls);
+	void DrawGameOver(RectF& walls);
 	void DrawWalls(RectF& walls, float thickness, Color c);
 	void DrawHeart(int x, int y);
 	~Graphics();

@@ -356,8 +356,10 @@ void Graphics::DrawCircle(int x, int y, int radius, Color c)
 	}
 }
 
-void Graphics::DrawStartGame(int x, int y)
+void Graphics::DrawStartGame(RectF& walls)
 {
+	int x = int(walls.right + walls.left) / 2 - 25;
+	int y = int(walls.top + walls.bottom) / 2 - 25;
 	PutPixel(11 + x, 10 + y, 255, 255, 255);
 	PutPixel(12 + x, 10 + y, 255, 255, 255);
 	PutPixel(13 + x, 10 + y, 255, 255, 255);
@@ -986,8 +988,10 @@ void Graphics::DrawStartGame(int x, int y)
 
 }
 
-void Graphics::DrawGameOver(int x, int y)
+void Graphics::DrawGameOver(RectF& walls)
 {
+	int x = int(walls.right + walls.left) / 2 - 25;
+	int y = int(walls.top + walls.bottom) / 2 - 25;
 	PutPixel(3 + x, 8 + y, 12, 12, 12);
 	PutPixel(4 + x, 8 + y, 92, 92, 92);
 	PutPixel(5 + x, 8 + y, 195, 195, 195);

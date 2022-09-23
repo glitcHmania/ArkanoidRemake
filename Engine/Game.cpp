@@ -35,8 +35,8 @@ Game::Game( MainWindow& wnd )
 {
 	const Vec2 brickStartPos = Vec2(walls.left + 55.0f, walls.top + 80.0f);
 
-	Color color1List[4] = { Colors::MakeRGB(175,0,0), Colors::MakeRGB(0,175,0), Colors::MakeRGB(0,0,175), Colors::MakeRGB(175,146,0) };
-	Color color2List[4] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Yellow };
+	Color color0List[4] = { Colors::MakeRGB(175,0,0), Colors::MakeRGB(0,175,0), Colors::MakeRGB(0,0,175), Colors::MakeRGB(175,146,0) };
+	Color color1List[4] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Yellow };
 	for (int y = 0; y < bricksRows ; ++y)
 	{
 		for (int x = 0; x < bricksColumns; ++x)
@@ -46,8 +46,8 @@ Game::Game( MainWindow& wnd )
 				bricks[x + y * bricksColumns] = Brick(Vec2((x * brickWidth) + brickStartPos.x,
 					(y * brickHeight) + brickStartPos.y),
 					brickWidth, brickHeight,
-					color1List[y % 4],
-					color2List[y % 4]);
+					color0List[y % 4],
+					color1List[y % 4]);
 			}
 		}
 	}
@@ -71,41 +71,54 @@ void Game::Go()
 
 void Game::UpdateModel(float deltaTime)
 {
-	// Checking if the "ENTER" is pressed to start the game
-	if (!gameStarted && wnd.kbd.KeyIsPressed(VK_RETURN))
+	switch (status)
 	{
-		gameStarted = true;
-	}
-
-	// Checking if the ball is colliding with bottom wall to determine the game over status
-	if (ball.BottomCollision(walls))
-	{
-		if (lives == 1)
+	case Game::Status::NotStarted:
+		if (wnd.kbd.KeyIsPressed(VK_RETURN) || wnd.mouse.LeftIsPressed())
 		{
-			gameOver = true;
-			if (fartPlaying)
-			{
-				soundFart.Play(1.0f, 0.3f);
-				fartPlaying = false;
-			}
+			status = Status::Started;
+		}
+		// Making the ball stick to the pad in the title screen
+		ball.SetPosX(pad.GetCenter().x);
+
+		// Making the ball bounce to the center of the screen
+		if (pad.GetCenter().x < gfx.ScreenWidth / 2)
+		{
+			ball.SetVelX(300.0f);
 		}
 		else
 		{
-			soundFart.Play(1.0f, 0.3f);
-			lives -= 1;
+			ball.SetVelX(-300.0f);
 		}
-	}
-
-	// Checking if the game is active
-	if (gameStarted && !gameOver)
-	{
+		pad.Update(deltaTime, wnd.kbd, walls, wnd.mouse);
+		break;
+	case Game::Status::Started:
 		// Making the ball move
 		ball.Update(deltaTime);
 
 		// Calculating the ball/outer-walls collision
-		if (ball.WallCollision(walls))
+		// Checking if the ball is colliding with bottom wall to determine the game over status
+		switch (ball.CollisionType(walls))
 		{
+		case Ball::HitResult::Wall:
 			soundPad.Play(1.0f, 0.3f);
+			break;
+		case Ball::HitResult::Bottom:
+			if (lives == 1)
+			{
+				status = Status::Over;
+				if (fartPlaying)
+				{
+					soundFart.Play(1.0f, 0.3f);
+					fartPlaying = false;
+				}
+			}
+			else
+			{
+				soundFart.Play(1.0f, 0.3f);
+				lives -= 1;
+			}
+			break;
 		}
 
 		// Making the ball hit the closest colliding brick 
@@ -141,71 +154,49 @@ void Game::UpdateModel(float deltaTime)
 			bricks[currentColIndex].ExecuteBallCollision(ball);
 		}
 
-		// Calculating the pad-corner-hitbox/ball collision for diagonal bounce situation
-		pad.BallCornerCollision(ball);
-
 		// Calculating the simple pad/ball collision
 		if (pad.BallCollision(ball, wnd.kbd))
 		{
 			soundPad.Play(1.0f, 0.3f);
 		}
-	}
-
-	// Checking if the title screen is active
-	if(!gameStarted && !gameOver)
-	{
-		// Making the ball stick to the pad in the title screen
-		ball.SetPosX(pad.GetCenter().x);
-
-		// Making the ball bounce to the center of the screen
-		if (pad.GetCenter().x < gfx.ScreenWidth / 2)
-		{
-			ball.SetVelX(300.0f);
-		}
-		else
-		{
-			ball.SetVelX(-300.0f);
-		}
-	}
-
-	// Checking if the game is over
-	if (!gameOver)
-	{
 		// Calculating the pad/wall collision
 		pad.WallCollision(walls);
 
 		// Making the pad move
 		pad.Update(deltaTime, wnd.kbd, walls, wnd.mouse);
+		break;
 	}
 }
 
 void Game::ComposeFrame()
 {
-	// Drawing the game objects
-	for (int i = 0; i < lives; i++)
+	switch (status)
 	{
-		if (!gameOver)
+	case Game::Status::NotStarted:
+		gfx.DrawStartGame(walls);
+	
+	case Game::Status::Started:
+		// Drawing the game objects
+		for (int i = 0; i < lives; i++)
 		{
-			gfx.DrawHeart(int(walls.right - 30.0f - i * 30.0f), int(walls.bottom - 30.0f));
+			if (status != Status::Over)
+			{
+				gfx.DrawHeart(int(walls.right - 30.0f - i * 30.0f), int(walls.bottom - 30.0f));
+			}
 		}
-	}
 
-	gfx.DrawWalls(walls, 5.0f, Colors::Blue);
+		gfx.DrawWalls(walls, 5.0f, Colors::Blue);
 
-	for (Brick& brick : bricks)
-	{
-		brick.Draw(gfx);
-	}
-	ball.Draw(gfx);
-	pad.Draw(gfx, pad.GetCenter());
-
-	// Drawing the title and game over screen
-	if (gameOver)
-	{
-		gfx.DrawGameOver(gfx.ScreenWidth / 2 - 25, gfx.ScreenHeight / 2 - 25);
-	}
-	if (!gameStarted)
-	{
-		gfx.DrawStartGame(gfx.ScreenWidth / 2 - 25, gfx.ScreenHeight / 2 - 25);
+		for (Brick& brick : bricks)
+		{
+			brick.Draw(gfx);
+		}
+		ball.Draw(gfx);
+		pad.Draw(gfx, pad.GetCenter());
+		break;
+	case Game::Status::Over:
+		gfx.DrawGameOver(walls);
+		gfx.DrawWalls(walls, 5.0f, Colors::Blue);
+		break;
 	}
 }

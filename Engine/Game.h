@@ -34,6 +34,13 @@
 class Game
 {
 public:
+	enum class Status {
+		NotStarted,
+		Started,
+		Paused,
+		Over
+	};
+public:
 	Game( class MainWindow& wnd );
 	Game( const Game& ) = delete;
 	Game& operator=( const Game& ) = delete;
@@ -49,8 +56,7 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	bool gameStarted = false;
-	bool gameOver = false;
+	Status status = Status::NotStarted;
 	RectF walls;
 	Ball ball;
 	FrameTimer ft;

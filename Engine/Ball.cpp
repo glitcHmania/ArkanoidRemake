@@ -22,47 +22,38 @@ RectF Ball::GetRect()
 	return RectF::ByCenter(pos, radius, radius);
 }
 
-bool Ball::WallCollision(const RectF& walls)
+Ball::HitResult Ball::CollisionType(const RectF& walls)
 {
-	bool isColliding = false;
+	HitResult hr = HitResult::Empty;
 	if (GetRect().left < walls.left)
 	{
 		cooldownActive = false;
 		pos.x += walls.left - GetRect().left;
 		BounceX();
-		isColliding = true;
+		hr = HitResult::Wall;
 	}
 	if (GetRect().right > walls.right)
 	{
 		cooldownActive = false;
 		pos.x += walls.right - GetRect().right;
 		BounceX();
-		isColliding = true;
+		hr = HitResult::Wall;
 	}
 	if (GetRect().top < walls.top)
 	{
 		cooldownActive = false;
 		pos.y += walls.top - GetRect().top;
 		BounceY();
-		isColliding = true;
+		hr = HitResult::Wall;
 	}
 	if (GetRect().bottom > walls.bottom)
 	{
 		cooldownActive = false;
 		pos.y += walls.bottom - GetRect().bottom;
 		BounceY();
-		isColliding = true;
+		hr = HitResult::Bottom;
 	}
-	return isColliding;
-}
-
-bool Ball::BottomCollision(const RectF& walls)
-{
-	if (GetRect().bottom > walls.bottom - 0.01f)
-	{
-		return true;
-	}
-	return false;
+	return hr;
 }
 
 void Ball::BounceX()
